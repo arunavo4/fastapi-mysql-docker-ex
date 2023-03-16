@@ -32,3 +32,17 @@ def read_heroes():
         FROM Hero
         """, ())
     return JSONResponse(status_code=200, content=jsonable_encoder(heros))
+
+
+@app.get("/heroes/{name}/{secret_name}")
+def read_hero_age(name: str, secret_name: str):
+    hero = query_get("""
+        SELECT age 
+        FROM Hero 
+        WHERE name = %s AND secret_name = %s
+        """, (name, secret_name))
+
+    if hero:
+        return JSONResponse(status_code=200, content=jsonable_encoder(hero))
+    else:
+        return JSONResponse(status_code=404, content="Hero not found")
